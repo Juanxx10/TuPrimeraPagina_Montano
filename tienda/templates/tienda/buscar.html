@@ -1,0 +1,62 @@
+{% extends 'main/base.html' %}
+{% block title %}Buscar Moto{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+  <h2 class="fw-bold">Buscar Moto</h2>
+</div>
+
+<form method="GET" class="mx-auto" style="max-width: 450px;">
+  <div class="row g-3 align-items-center">
+    <div class="col-md-4">
+      <select name="filtro" class="form-select" aria-label="Filtro de búsqueda">
+        <option value="" disabled {% if not form.cleaned_data.filtro %}selected{% endif %}>Seleccionar filtro</option>
+        <option value="marca" {% if form.cleaned_data.filtro == 'marca' %}selected{% endif %}>Marca</option>
+        <option value="modelo" {% if form.cleaned_data.filtro == 'modelo' %}selected{% endif %}>Modelo</option>
+        <option value="cilindrada" {% if form.cleaned_data.filtro == 'cilindrada' %}selected{% endif %}>Cilindrada</option>
+        <option value="año" {% if form.cleaned_data.filtro == 'año' %}selected{% endif %}>Año</option>
+        <option value="estado" {% if form.cleaned_data.filtro == 'estado' %}selected{% endif %}>Estado</option>
+        <option value="kilometros" {% if form.cleaned_data.filtro == 'kilometros' %}selected{% endif %}>Kilómetros</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <input type="text" name="query" class="form-control" placeholder="Ingrese término de búsqueda" value="{{ form.cleaned_data.query }}">
+    </div>
+    <div class="col-md-2 d-flex justify-content-between">
+      <button type="submit" class="btn btn-primary me-2">Buscar</button>
+      <a href="{% url 'buscar_moto' %}" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+  </div>
+</form>
+
+<div class="mt-5 mx-auto" style="max-width: 700px;">
+  <h3 class="text-center mb-4">Resultados:</h3>
+  <div class="row">
+    {% for moto in resultado %}
+      <div class="col-12 mb-3">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="card-title">{{ moto.modelo }} - {{ moto.marca }}</h5>
+            <p class="card-text">
+              Cilindrada: {{ moto.cilindrada }}cc<br>
+              Año: {{ moto.año }}<br>
+              Kilómetros: {{ moto.kilometros }}<br>
+              Estado: 
+              <span class="badge 
+              {% if moto.estado == 'Nueva' %}bg-success
+              {% elif moto.estado == 'Usada' %}bg-warning text-dark
+              {% else %}bg-secondary
+              {% endif %}">
+              {{ moto.estado }}
+              </span>
+            </p>
+            <strong class="text-success fs-5">Precio: USD {{ moto.precio }}</strong><br>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="text-muted text-center">No se encontraron resultados.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
